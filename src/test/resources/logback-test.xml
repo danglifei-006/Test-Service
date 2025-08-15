@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="30 seconds">
+    <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"/>
+    <property name="LOG_GROUP_NAME" value="${LOG_GROUP_NAME:-/fraud-detection/default-logs}"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="CLOUDWATCH" class="ca.pjer.logback.AwsLogsAppender">
+        <logGroupName>${LOG_GROUP_NAME}</logGroupName>
+        <logStreamName>${HOSTNAME:-unknown}-${PID:-0}</logStreamName>
+        <layout>
+            <pattern>${LOG_PATTERN}</pattern>
+        </layout>
+
+        <logRegion>ap-southeast-1</logRegion>
+        <maxBatchLogEvents>100</maxBatchLogEvents>
+        <maxFlushTimeMillis>3000</maxFlushTimeMillis>
+
+    </appender>
+
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="CLOUDWATCH"/>
+    </root>
+    <logger name="com.fraud.service.FraudDetectionService" level="WARN" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="CLOUDWATCH"/>
+    </logger>
+</configuration>

@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fraud-detection
+  namespace: fraud-system
+  labels:
+    app: fraud-detection
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: fraud-detection
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: fraud-detection
+    spec:
+      serviceAccountName: fraud-detection-sa
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution: # 硬约束：必须分散
+            - labelSelector:
+                matchLabels:
+                  app: fraud-detection  # 目标：与其他同标签的Pod
+              topologyKey: kubernetes.io/hostname  # 按节点分
+      containers:
+      - name: fraud-detection
+        image: 846697434276.dkr.ecr.ap-southeast-1.amazonaws.com/dlf:latest
+        resources:
+          requests:
+            cpu: 200m
+            memory: 512Mi
+          limits:
+            cpu: 500m
+            memory: 1Gi
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /actuator/health/liveness
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /actuator/health/readiness
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 5
+        env:
+        - name: AWS_REGION
+          valueFrom:
+            configMapKeyRef:
+              name: fraud-config
+              key: aws.region
+        - name: AWS_SQS_QUEUE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: fraud-config
+              key: aws.sqs.queue.url
+        - name: AWS_SNS_TOPIC_ARN
+          valueFrom:
+            configMapKeyRef:
+              name: fraud-config
+              key: aws.sns.topic.arn
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: aws-credentials
+              key: AWS_ACCESS_KEY_ID
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: aws-credentials
+              key: AWS_SECRET_ACCESS_KEY
