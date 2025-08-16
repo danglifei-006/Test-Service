@@ -23,6 +23,7 @@ spec:
     metadata:
       labels:
         app: fraud-detection
+    spec:
       serviceAccountName: fraud-detection-sa
       containers:
       - name: fraud-detection
