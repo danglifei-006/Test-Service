@@ -38,14 +38,14 @@ public class FraudDetectionServiceTest {
         fraudDetectionService.init();
 
         // 模拟SNS通知
-        doNothing().when(snsNotificationService).sendFraudAlert(org.mockito.ArgumentMatchers.any(FraudResult.class));
+       // doNothing().when(snsNotificationService).sendFraudAlert(org.mockito.ArgumentMatchers.any(FraudResult.class));
 
         // 创建测试交易
         Instant now = Instant.now();
-        highAmountTx = new Transaction("TX-001", "ACCT-789", 15000.0, "New York", now, "MCH-001");
-        suspiciousAcctTx = new Transaction("TX-002", "ACCT-123", 5000.0, "London", now, "MCH-002");
-        normalTx = new Transaction("TX-003", "ACCT-789", 8000.0, "Paris", now, "MCH-003");
-        highRiskLocationTx = new Transaction("TX-004", "ACCT-789", 8000.0, "HighRiskCountry1", now, "MCH-004");
+        highAmountTx = new Transaction("TX-001", "ACCT-789", 15000.0, "New York",  "MCH-001");
+        suspiciousAcctTx = new Transaction("TX-002", "ACCT-123", 5000.0, "London",  "MCH-002");
+        normalTx = new Transaction("TX-003", "ACCT-789", 8000.0, "Paris",  "MCH-003");
+        highRiskLocationTx = new Transaction("TX-004", "ACCT-789", 8000.0, "HighRiskCountry1",  "MCH-004");
     }
 
     @Test
@@ -81,7 +81,7 @@ public class FraudDetectionServiceTest {
 
     @Test
     void testMultipleRulesTriggered_ShouldBeFraud() {
-        Transaction tx = new Transaction("TX-005", "ACCT-123", 15000.0, "HighRiskCountry1", Instant.now(), "MCH-005");
+        Transaction tx = new Transaction("TX-005", "ACCT-123", 15000.0, "HighRiskCountry1",  "MCH-005");
         FraudResult result = fraudDetectionService.detectFraud(tx);
         assertTrue(result.isFraudulent());
         assertEquals(3, result.getReasons().size()); // 金额+可疑账户+高危地区
