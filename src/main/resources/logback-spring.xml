@@ -19,10 +19,11 @@
         <layout>
             <pattern>${LOG_PATTERN}</pattern>
         </layout>
-        <awsCredentialsProvider class="software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider"/>
-        <region>${aws.region:-us-east-1}</region>
+
+        <logRegion>ap-southeast-1</logRegion>
         <maxBatchLogEvents>100</maxBatchLogEvents>
         <maxFlushTimeMillis>3000</maxFlushTimeMillis>
+
     </appender>
 
     <!-- 根日志配置 -->

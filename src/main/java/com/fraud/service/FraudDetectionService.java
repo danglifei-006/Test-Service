@@ -91,7 +91,7 @@ public class FraudDetectionService {
         if (isFraudulent) {
             logger.warn("检测到欺诈交易 - ID: {}, 原因: {}", 
                     transaction.getTransactionId(), fraudReasons);
-            snsNotificationService.sendFraudAlert(result);
+           // snsNotificationService.sendFraudAlert(result);
         } else {
             logger.info("交易正常 - ID: {}, 金额: {}", 
                     transaction.getTransactionId(), transaction.getAmount());

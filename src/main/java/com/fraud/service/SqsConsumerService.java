@@ -72,7 +72,7 @@ public class SqsConsumerService {
                     FraudResult result = fraudDetectionService.detectFraud(transaction);
 
                     // 存储交易和检测结果
-                    dynamoDbStorageService.saveTransactionResult(transaction, result);
+                   // dynamoDbStorageService.saveTransactionResult(transaction, result);
 
                     // 删除已处理的消息
                     DeleteMessageRequest deleteRequest = DeleteMessageRequest.builder()

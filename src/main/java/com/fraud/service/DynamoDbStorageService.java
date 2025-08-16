@@ -39,7 +39,6 @@ public class DynamoDbStorageService {
             item.put("accountId", AttributeValue.builder().s(transaction.getAccountId()).build());
             item.put("amount", AttributeValue.builder().n(String.valueOf(transaction.getAmount())).build());
             item.put("location", AttributeValue.builder().s(transaction.getLocation()).build());
-            item.put("timestamp", AttributeValue.builder().s(transaction.getTimestamp().toString()).build());
             item.put("merchantId", AttributeValue.builder().s(transaction.getMerchantId()).build());
             
             // 欺诈检测结果

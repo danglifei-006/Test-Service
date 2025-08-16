@@ -61,9 +61,9 @@ mvn clean package -DskipTests
 docker build -t fraud-detection-system:1.0.0 .
 
 # 推送镜像到ECR
-aws ecr get-login-password | docker login --username AWS --password-stdin <your-ecr-repo-uri>
-docker tag fraud-detection-system:1.0.0 <your-ecr-repo-uri>:1.0.0
-docker push <your-ecr-repo-uri>:1.0.0
+登录ECR 获取临时登录命令
+docker tag fraud-detection-system:1.0.0  846697434276.dkr.ecr.ap-southeast-1.amazonaws.com/dlf:latest
+docker push 846697434276.dkr.ecr.ap-southeast-1.amazonaws.com/dlf:latest
 ### 3. 部署到Kubernetes (EKS)
 # 创建命名空间
 kubectl create namespace fraud-system
@@ -71,10 +71,9 @@ kubectl create namespace fraud-system
 # 创建配置映射
 kubectl create configmap fraud-config \
   --namespace fraud-system \
-  --from-literal=aws.region=us-east-1 \
-  --from-literal=aws.sqs.queue.url=<your-sqs-queue-url> \
-  --from-literal=aws.dynamodb.table.name=fraud-transactions \
-  --from-literal=aws.sns.topic.arn=<your-sns-topic-arn>
+  --from-literal=aws.region=ap-southeast-1 \
+  --from-literal=aws.sqs.queue.url=https://sqs.ap-southeast-1.amazonaws.com/846697434276/transactions-queue.fifo 
+
 
 # 部署应用
 kubectl apply -f k8s/deployment.yaml
@@ -90,7 +89,7 @@ mvn verify
 
 可以使用AWS CLI向SQS队列发送测试交易：
 aws sqs send-message \
-  --queue-url <your-sqs-queue-url> \
+  --queue-url https://sqs.ap-southeast-1.amazonaws.com/846697434276/transactions-queue.fifo \
   --message-body '{
     "transactionId": "TEST-12345",
     "accountId": "ACCT-123",
@@ -98,7 +97,9 @@ aws sqs send-message \
     "location": "HighRiskCountry1",
     "timestamp": "2023-07-01T12:00:00Z",
     "merchantId": "MCH-TEST"
-  }'
+  }' \
+  --message-group-id "transaction-group-1"
+  # 新增：指定消息组ID
 ## 监控
 
 - 查看应用日志：`kubectl logs -f <pod-name> -n fraud-system`

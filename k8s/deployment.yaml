@@ -23,7 +23,7 @@ spec:
       serviceAccountName: fraud-detection-sa
       containers:
       - name: fraud-detection
-        image: ${ECR_REPOSITORY_URI}:${IMAGE_TAG}
+        image: 846697434276.dkr.ecr.ap-southeast-1.amazonaws.com/dlf:latest
         resources:
           requests:
             cpu: 200m
