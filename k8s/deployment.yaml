@@ -6,6 +6,10 @@ metadata:
   labels:
     app: fraud-detection
 spec:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - podAffinityTerm:
+          topologyKey: kubernetes.io/hostname
   replicas: 3
   selector:
     matchLabels:
@@ -19,11 +23,6 @@ spec:
     metadata:
       labels:
         app: fraud-detection
-    spec:
-      podAntiAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          - podAffinityTerm:
-              topologyKey: kubernetes.io/hostname
       serviceAccountName: fraud-detection-sa
       containers:
       - name: fraud-detection
