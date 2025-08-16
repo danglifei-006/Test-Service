@@ -72,8 +72,9 @@ kubectl create namespace fraud-system
 kubectl create configmap fraud-config \
   --namespace fraud-system \
   --from-literal=aws.region=ap-southeast-1 \
-  --from-literal=aws.sqs.queue.url=https://sqs.ap-southeast-1.amazonaws.com/846697434276/transactions-queue.fifo 
-
+  --from-literal=aws.sqs.queue.url=https://sqs.ap-southeast-1.amazonaws.com/846697434276/transactions-queue.fifo  \
+  --from-literal=aws.dynamodb.table.name=fraud-transactions
+  --from-literal=aws.sns.topic.arn=arn:aws:sns:ap-southeast-1:846697434276:fraud-alerts
 
 # 部署应用
 kubectl apply -f k8s/deployment.yaml

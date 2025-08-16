@@ -11,7 +11,7 @@ COPY src ./src
 RUN mvn package -DskipTests
 
 # 第二阶段 - 运行环境
-FROM FROM public.ecr.aws/amazoncorretto/amazoncorretto:17-al2-jdk
+FROM  public.ecr.aws/amazoncorretto/amazoncorretto:17-al2-jdk
 
 # 创建非root用户并切换
 #RUN addgroup -S appgroup && adduser -S appuser -G appgroup
