@@ -6,10 +6,6 @@ metadata:
   labels:
     app: fraud-detection
 spec:
-  podAntiAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-      - podAffinityTerm:
-          topologyKey: kubernetes.io/hostname
   replicas: 3
   selector:
     matchLabels:
@@ -25,6 +21,13 @@ spec:
         app: fraud-detection
     spec:
       serviceAccountName: fraud-detection-sa
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution: # 硬约束：必须分散
+            - labelSelector:
+                matchLabels:
+                  app: fraud-detection  # 目标：与其他同标签的Pod
+              topologyKey: kubernetes.io/hostname  # 按节点分
       containers:
       - name: fraud-detection
         image: 846697434276.dkr.ecr.ap-southeast-1.amazonaws.com/dlf:latest
