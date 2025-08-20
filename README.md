@@ -124,6 +124,10 @@ kubectl create configmap fraud-config \
   --from-literal=aws.sqs.queue.url=https://sqs.ap-southeast-1.amazonaws.com/846697434276/transactions-queue.fifo  \
   --from-literal=aws.sns.topic.arn=arn:aws:sns:ap-southeast-1:846697434276:fraud-alerts
 
+### 创建secret
+
+kubectl create secret generic aws-credentials2   --from-literal=AWS_ACCESS_KEY_ID="实际aws秘钥id"   --from-literal=AWS_SECRET_ACCESS_KEY="实际aws秘钥"
+
 ### 4. 部署应用
 ```bash
 kubectl apply -f k8s/deployment.yaml
